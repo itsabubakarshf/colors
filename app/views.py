@@ -6,13 +6,15 @@ import numpy as np
 from django.conf import settings
 import os
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.middleware.csrf import get_token
 
+def get_csrf_token(request):
+    return JsonResponse({'csrfToken': get_token(request)})
+
+@csrf_exempt
 def color(request):
-    print("request=> ",request)
     if request.method == 'POST':
-        for item in request:
-            print("item=> ",item)
-        print("request.POST=> ",request.POST)
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
             img = cv2.imdecode(np.fromstring(request.FILES['image'].read(), np.uint8), cv2.IMREAD_COLOR)
@@ -21,16 +23,11 @@ def color(request):
             r = int(r)
             g = int(g)
             b = int(b)
-            # csv_path=os.path.join(settings.STATIC_ROOT, 'colors.csv')
-            # csv = pd.read_csv(csv_path, names=['color', 'color_name', 'hex', 'R', 'G', 'B'], header=None)
-            # minimum = 10000
-            # for i in range(len(csv)):
-            #     distance = abs(r - int(csv.loc[i, 'R'])) + abs(g - int(csv.loc[i, 'G'])) + abs(b - int(csv.loc[i, 'B']))
-            #     if distance <= minimum:
-            #         minimum = distance
-            #         colorname = csv.loc[i, 'color_name']
-            color=str(r)+"-"+str(g)+"-"+str(b)
-            return JsonResponse({'color': color})
+            color = {'color': f"{r}-{g}-{b}"}
+            return JsonResponse(color)
+        else:
+            error = {'error': 'Invalid form data'}
+            return JsonResponse(error, status=400)
     else:
-        form = ImageUploadForm()
-    return render(request, 'index.html', {'form': form})
+        error = {'error': 'Invalid request method'}
+        return JsonResponse(error, status=400)
