@@ -131,9 +131,9 @@ CSRF_TRUSTED_ORIGINS = ['localhost:3000','localhost:8000','http://127.0.0.1:8000
 ALLOWED_HOSTS=['*']
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
-    'localhost:8000',
-    'localhost:3000',
-    '127.0.0.1:9000'
+    'http://localhost:8000',
+    'http://localhost:3000',
+    'http://127.0.0.1:9000'
 )
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
