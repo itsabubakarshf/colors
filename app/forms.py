@@ -1,4 +1,4 @@
 from django import forms
 
-class ImageUploadForm(forms.Form):
-    image = forms.ImageField()
+class ImageForm(forms.Form):
+    data = forms.CharField(widget=forms.Textarea)
